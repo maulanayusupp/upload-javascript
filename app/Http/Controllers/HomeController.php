@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Input;
+use App\Gallery;
 class HomeController extends Controller
 {
     /**
@@ -23,23 +23,27 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $galleries = Gallery::all();
+        return view('welcome', compact('galleries'));
     }
 
     public function postImage (Request $request) {
-        // $image = $request->file('image');
         $images = [];
-
-        foreach ($request->file('image') as $productImage) {
-            $upload_file = $productImage;
-            $extension = $upload_file->getClientOriginalExtension();
-            $picturename = str_random(10) . '.' . $extension;
-            $destinationPath = public_path() . DIRECTORY_SEPARATOR . 'img/';
-            $upload_file->move($destinationPath, $picturename);
-            $image = 'public/img/'. $picturename;
-            array_push($images, $image);
+        if ($request->file('image')) {
+            foreach ($request->file('image') as $productImage) {
+                $upload_file = $productImage;
+                $extension = $upload_file->getClientOriginalExtension();
+                $picturename = str_random(10) . '.' . $extension;
+                $destinationPath = public_path() . DIRECTORY_SEPARATOR . 'img/';
+                $upload_file->move($destinationPath, $picturename);
+                $image = 'img/'. $picturename;
+                array_push($images, $image);
+            }
+            $gallery = new Gallery();
+            $gallery->images = json_encode($images);
+            $gallery->save();
         }
 
-        dd($images);
+        return redirect('/');
     }
 }

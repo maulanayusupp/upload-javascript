@@ -12,6 +12,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <script>
+        window.Laravel = <?php echo json_encode([
+            'csrfToken' => csrf_token(),
+            'url' => config('app.url'),
+        ]); ?>
+    </script>
 </head>
 <body>
     <div id="app">
@@ -48,5 +55,8 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('js/axios.min.js') }}"></script>
+
+    @yield('script')
 </body>
 </html>
